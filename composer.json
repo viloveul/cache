@@ -7,12 +7,16 @@
         "name": "Fajrul Akbar Zuhdi",
         "email": "fajrulaz@gmail.com"
     }],
-    "keywords": ["framework", "cache", "zafex", "viloveul", "fajrulaz"],
+    "keywords": ["framework", "micro", "zafex", "viloveul", "fajrulaz", "cache"],
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "config": {
+        "sort-packages": true
+    },
     "require": {
         "psr/simple-cache": "^1.0",
         "ext-apcu": "*"
     },
-    "minimum-stability": "dev",
     "autoload": {
         "psr-4": {
             "Viloveul\\Cache\\": "src/"

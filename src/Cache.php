@@ -25,7 +25,7 @@ class Cache implements ICache
      */
     public function clear()
     {
-        return $this->getAdapter()->clear();
+        return $this->adapter->clear();
     }
 
     /**
@@ -34,7 +34,7 @@ class Cache implements ICache
      */
     public function delete($key)
     {
-        return $this->getAdapter()->delete($key);
+        return $this->adapter->delete($key);
     }
 
     /**
@@ -55,7 +55,7 @@ class Cache implements ICache
      */
     public function get($key, $default = null)
     {
-        return $this->getAdapter()->get($key) ?: $default;
+        return $this->adapter->get($key) ?: $default;
     }
 
     /**
@@ -86,7 +86,7 @@ class Cache implements ICache
      */
     public function has($key)
     {
-        return $this->getAdapter()->has($key);
+        return $this->adapter->has($key);
     }
 
     /**
@@ -97,7 +97,7 @@ class Cache implements ICache
      */
     public function set($key, $value, $ttl = null)
     {
-        return $this->getAdapter()->set($key, $value, $ttl ?: $this->getAdapter()->getDefaultLifeTime());
+        return $this->adapter->set($key, $value, $ttl ?: $this->adapter->getDefaultLifeTime());
     }
 
     /**
