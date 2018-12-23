@@ -1,13 +1,13 @@
 {
-    "name": "zafex/viloveul-cache",
+    "name": "viloveul/cache",
     "description": "Viloveul cache.",
-    "type": "framework",
+    "type": "component",
     "license": "MIT",
     "authors": [{
         "name": "Fajrul Akbar Zuhdi",
         "email": "fajrulaz@gmail.com"
     }],
-    "keywords": ["framework", "micro", "zafex", "viloveul", "fajrulaz", "cache"],
+    "keywords": ["component", "zafex", "viloveul", "fajrulaz", "cache"],
     "minimum-stability": "dev",
     "prefer-stable": true,
     "config": {
