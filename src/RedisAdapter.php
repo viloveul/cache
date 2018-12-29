@@ -1,6 +1,6 @@
 <?php
 
-namespace Viloveul\Cache\Adapter;
+namespace Viloveul\Cache;
 
 use Exception;
 use Redis as RedisClient;
@@ -60,6 +60,17 @@ class RedisAdapter implements IAdapter
     /**
      * @param $key
      */
+    public function delete($key)
+    {
+        if (!$this->has($key)) {
+            return null;
+        }
+        $this->redisClient->delete($this->getPrefix() . $key);
+    }
+
+    /**
+     * @param $key
+     */
     public function get($key)
     {
         if (!$this->has($key)) {
@@ -91,17 +102,6 @@ class RedisAdapter implements IAdapter
     public function has($key)
     {
         return $this->redisClient->exists($this->getPrefix() . $key);
-    }
-
-    /**
-     * @param $key
-     */
-    public function remove($key)
-    {
-        if (!$this->has($key)) {
-            return null;
-        }
-        $this->redisClient->delete($this->getPrefix() . $key);
     }
 
     /**
