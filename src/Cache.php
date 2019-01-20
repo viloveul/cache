@@ -2,6 +2,8 @@
 
 namespace Viloveul\Cache;
 
+use Viloveul\Cache\AdapterException;
+use Viloveul\Cache\Collection;
 use Viloveul\Cache\Contracts\Adapter as ICacheAdapter;
 use Viloveul\Cache\Contracts\Cache as ICache;
 
@@ -13,11 +15,17 @@ class Cache implements ICache
     protected $adapter;
 
     /**
+     * @var array
+     */
+    protected $tmp = [];
+
+    /**
      * @param ICacheAdapter $adapter
      */
     public function __construct(ICacheAdapter $adapter)
     {
         $this->setAdapter($adapter);
+        $this->tmp = new Collection();
     }
 
     /**
@@ -25,7 +33,8 @@ class Cache implements ICache
      */
     public function clear()
     {
-        return $this->adapter->clear();
+        $this->tmp->clear();
+        return $this->getAdapter()->clear();
     }
 
     /**
@@ -34,7 +43,8 @@ class Cache implements ICache
      */
     public function delete($key)
     {
-        return $this->adapter->delete($key);
+        $this->tmp->delete($key);
+        return $this->getAdapter()->delete($key);
     }
 
     /**
@@ -55,14 +65,20 @@ class Cache implements ICache
      */
     public function get($key, $default = null)
     {
-        return $this->adapter->get($key) ?: $default;
+        if (!$this->tmp->has($key)) {
+            $this->tmp->set($key, $this->getAdapter()->get($key, $default));
+        }
+        return $this->tmp->get($key, $default);
     }
 
     /**
      * @return mixed
      */
-    public function getAdapter()
+    public function getAdapter(): ICacheAdapter
     {
+        if (!($this->adapter instanceof ICacheAdapter)) {
+            throw new AdapterException("Cache Adapter is not valid.");
+        }
         return $this->adapter;
     }
 
@@ -86,7 +102,42 @@ class Cache implements ICache
      */
     public function has($key)
     {
-        return $this->adapter->has($key);
+        return $this->getAdapter()->has($key);
+    }
+
+    /**
+     * @param  $key
+     * @return mixed
+     */
+    public function offsetExists($key)
+    {
+        return $this->has($key);
+    }
+
+    /**
+     * @param  $key
+     * @return mixed
+     */
+    public function offsetGet($key)
+    {
+        return $this->get($key);
+    }
+
+    /**
+     * @param $key
+     * @param $value
+     */
+    public function offsetSet($key, $value)
+    {
+        $this->set($key, $value);
+    }
+
+    /**
+     * @param $key
+     */
+    public function offsetUnset($key)
+    {
+        $this->delete($key);
     }
 
     /**
@@ -97,7 +148,9 @@ class Cache implements ICache
      */
     public function set($key, $value, $ttl = null)
     {
-        return $this->adapter->set($key, $value, $ttl ?: $this->adapter->getDefaultLifeTime());
+        $res = $this->getAdapter()->set($key, $value, $ttl ?: $this->getAdapter()->getDefaultLifeTime());
+        $this->tmp->set($key, $value);
+        return $res;
     }
 
     /**
