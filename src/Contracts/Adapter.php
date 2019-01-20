@@ -7,39 +7,39 @@ interface Adapter
     public function clear();
 
     /**
-     * @param $key
+     * @param string $key
      */
-    public function delete($key);
+    public function delete(string $key);
 
     /**
-     * @param $key
+     * @param string     $key
      * @param $default
      */
-    public function get($key);
+    public function get(string $key, $default = null);
 
     public function getDefaultLifeTime();
 
-    public function getPrefix();
+    public function getPrefix(): string;
 
     /**
-     * @param $key
+     * @param string $key
      */
-    public function has($key);
+    public function has(string $key): bool;
 
     /**
-     * @param $key
+     * @param string   $key
      * @param $value
-     * @param $ttl
+     * @param int      $ttl
      */
-    public function set($key, $value, $ttl = 3600);
+    public function set(string $key, $value, int $ttl = 3600);
 
     /**
-     * @param $ttl
+     * @param int $ttl
      */
-    public function setDefaultLifeTime($ttl);
+    public function setDefaultLifeTime(int $ttl);
 
     /**
-     * @param $key
+     * @param string $key
      */
-    public function setPrefix($key);
+    public function setPrefix(string $key);
 }

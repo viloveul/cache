@@ -2,12 +2,13 @@
 
 namespace Viloveul\Cache\Contracts;
 
+use ArrayAccess;
 use Psr\SimpleCache\CacheInterface as ICache;
 use Viloveul\Cache\Contracts\Adapter as ICacheAdapter;
 
-interface Cache extends ICache
+interface Cache extends ICache, ArrayAccess
 {
-    public function getAdapter();
+    public function getAdapter(): ICacheAdapter;
 
     /**
      * @param ICacheAdapter $adapter

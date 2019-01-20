@@ -17,17 +17,6 @@ class ApcuAdapter implements IAdapter
     protected $prefix = 'viloveul';
 
     /**
-     * @param $key
-     */
-    public function delete($key)
-    {
-        if (!$this->has($key)) {
-            return null;
-        }
-        return apcu_delete($this->getPrefix() . $key);
-    }
-
-    /**
      * @return mixed
      */
     public function clear()
@@ -52,15 +41,27 @@ class ApcuAdapter implements IAdapter
     }
 
     /**
-     * @param $key
+     * @param string $key
      */
-    public function get($key)
+    public function delete(string $key)
+    {
+        if (!$this->has($key)) {
+            return null;
+        }
+        return apcu_delete($this->getPrefix() . $key);
+    }
+
+    /**
+     * @param string     $key
+     * @param $default
+     */
+    public function get(string $key, $default = null)
     {
         if (!$this->has($key)) {
             return null;
         }
         $data = apcu_fetch($this->getPrefix() . $key);
-        return @unserialize($data) ?: $data;
+        return @unserialize($data) ?: ($data ?: $default);
     }
 
     /**
@@ -74,42 +75,42 @@ class ApcuAdapter implements IAdapter
     /**
      * @return mixed
      */
-    public function getPrefix()
+    public function getPrefix(): string
     {
         return $this->prefix;
     }
 
     /**
-     * @param $key
+     * @param string $key
      */
-    public function has($key)
+    public function has(string $key): bool
     {
         return apcu_exists($this->getPrefix() . $key);
     }
 
     /**
-     * @param $key
+     * @param string   $key
      * @param $value
-     * @param $expire
+     * @param int      $expire
      */
-    public function set($key, $value, $expire = null)
+    public function set(string $key, $value, int $expire = null)
     {
         $data = serialize($value);
         return apcu_store($this->getPrefix() . $key, $data, abs($expire ?: $this->getDefaultLifeTime()));
     }
 
     /**
-     * @param $ttl
+     * @param int $ttl
      */
-    public function setDefaultLifeTime($ttl)
+    public function setDefaultLifeTime(int $ttl)
     {
         $this->defaultTtl = $ttl;
     }
 
     /**
-     * @param $prefix
+     * @param int $prefix
      */
-    public function setPrefix($prefix)
+    public function setPrefix(int $prefix)
     {
         $this->prefix = $prefix;
     }
