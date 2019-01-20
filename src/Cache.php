@@ -3,6 +3,7 @@
 namespace Viloveul\Cache;
 
 use Viloveul\Cache\AdapterException;
+use Viloveul\Cache\Collection;
 use Viloveul\Cache\Contracts\Adapter as ICacheAdapter;
 use Viloveul\Cache\Contracts\Cache as ICache;
 
@@ -14,11 +15,17 @@ class Cache implements ICache
     protected $adapter;
 
     /**
+     * @var array
+     */
+    protected $tmp = [];
+
+    /**
      * @param ICacheAdapter $adapter
      */
     public function __construct(ICacheAdapter $adapter)
     {
         $this->setAdapter($adapter);
+        $this->tmp = new Collection();
     }
 
     /**
@@ -26,6 +33,7 @@ class Cache implements ICache
      */
     public function clear()
     {
+        $this->tmp->clear();
         return $this->getAdapter()->clear();
     }
 
@@ -35,6 +43,7 @@ class Cache implements ICache
      */
     public function delete($key)
     {
+        $this->tmp->delete($key);
         return $this->getAdapter()->delete($key);
     }
 
@@ -56,7 +65,10 @@ class Cache implements ICache
      */
     public function get($key, $default = null)
     {
-        return $this->getAdapter()->get($key) ?: $default;
+        if (!$this->tmp->has($key)) {
+            $this->tmp->set($key, $this->getAdapter()->get($key, $default));
+        }
+        return $this->tmp->get($key, $default);
     }
 
     /**
@@ -136,7 +148,9 @@ class Cache implements ICache
      */
     public function set($key, $value, $ttl = null)
     {
-        return $this->getAdapter()->set($key, $value, $ttl ?: $this->getAdapter()->getDefaultLifeTime());
+        $res = $this->getAdapter()->set($key, $value, $ttl ?: $this->getAdapter()->getDefaultLifeTime());
+        $this->tmp->set($key, $value);
+        return $res;
     }
 
     /**

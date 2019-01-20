@@ -3,6 +3,7 @@
 namespace Viloveul\Cache;
 
 use Exception;
+use InvalidArgumentException;
 use Redis as RedisClient;
 use Viloveul\Cache\Contracts\Adapter as IAdapter;
 
@@ -26,11 +27,17 @@ class RedisAdapter implements IAdapter
     /**
      * @param string $host
      * @param int    $port
+     * @param string $password
      */
-    public function __construct(string $host = '127.0.0.1', int $port = 6379)
+    public function __construct(string $host = '127.0.0.1', int $port = 6379, string $password = null)
     {
         $this->redisClient = new RedisClient();
         $this->redisClient->connect($host, $port);
+        if (!is_null($password)) {
+            if (!$this->redisClient->auth($password)) {
+                throw new InvalidArgumentException("Redis password invalid.");
+            }
+        }
     }
 
     /**
@@ -78,7 +85,7 @@ class RedisAdapter implements IAdapter
             return null;
         }
         $data = $this->redisClient->get($this->getPrefix() . $key);
-        return @unserialize($data) ?: ($data ?: $default);
+        return @unserialize($data) ?: (is_null($data) ? $default : $data);
     }
 
     /**

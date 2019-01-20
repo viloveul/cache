@@ -61,7 +61,7 @@ class ApcuAdapter implements IAdapter
             return null;
         }
         $data = apcu_fetch($this->getPrefix() . $key);
-        return @unserialize($data) ?: ($data ?: $default);
+        return @unserialize($data) ?: (is_null($data) ? $default : $data);
     }
 
     /**
@@ -108,9 +108,9 @@ class ApcuAdapter implements IAdapter
     }
 
     /**
-     * @param int $prefix
+     * @param string $prefix
      */
-    public function setPrefix(int $prefix)
+    public function setPrefix(string $prefix)
     {
         $this->prefix = $prefix;
     }
