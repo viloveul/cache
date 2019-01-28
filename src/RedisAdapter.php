@@ -82,10 +82,11 @@ class RedisAdapter implements IAdapter
     public function get(string $key, $default = null)
     {
         if (!$this->has($key)) {
-            return null;
+            return $default;
         }
         $data = $this->redisClient->get($this->getPrefix() . $key);
-        return @unserialize($data) ?: (is_null($data) ? $default : $data);
+        $res = @unserialize($data);
+        return ($res === false && $data !== 'b:0;') ? $data : $res;
     }
 
     /**
@@ -121,7 +122,7 @@ class RedisAdapter implements IAdapter
      */
     public function set(string $key, $value, int $expire = null)
     {
-        $data = serialize($value);
+        $data = is_scalar($value) ? $value : serialize($value);
         return $this->redisClient->set($this->getPrefix() . $key, $data, abs($expire ?: $this->getDefaultLifeTime()));
     }
 
