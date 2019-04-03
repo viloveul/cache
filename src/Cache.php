@@ -2,10 +2,10 @@
 
 namespace Viloveul\Cache;
 
-use Viloveul\Cache\AdapterException;
 use Viloveul\Cache\Collection;
-use Viloveul\Cache\Contracts\Adapter as ICacheAdapter;
+use Viloveul\Cache\AdapterException;
 use Viloveul\Cache\Contracts\Cache as ICache;
+use Viloveul\Cache\Contracts\Adapter as ICacheAdapter;
 
 class Cache implements ICache
 {

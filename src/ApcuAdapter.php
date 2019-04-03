@@ -14,7 +14,7 @@ class ApcuAdapter implements IAdapter
     /**
      * @var string
      */
-    protected $prefix = 'viloveul';
+    protected $prefix = 'viloveul:';
 
     /**
      * @return mixed
@@ -113,6 +113,6 @@ class ApcuAdapter implements IAdapter
      */
     public function setPrefix(string $prefix)
     {
-        $this->prefix = $prefix;
+        $this->prefix = ($prefix ?: 'viloveul') . ':';
     }
 }
