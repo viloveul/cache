@@ -3,8 +3,8 @@
 namespace Viloveul\Cache;
 
 use Exception;
-use InvalidArgumentException;
 use Redis as RedisClient;
+use InvalidArgumentException;
 use Viloveul\Cache\Contracts\Adapter as IAdapter;
 
 class RedisAdapter implements IAdapter
@@ -17,7 +17,7 @@ class RedisAdapter implements IAdapter
     /**
      * @var string
      */
-    protected $prefix = 'viloveul';
+    protected $prefix = 'viloveul:';
 
     /**
      * @var mixed
@@ -33,7 +33,7 @@ class RedisAdapter implements IAdapter
     {
         $this->redisClient = new RedisClient();
         $this->redisClient->connect($host, $port);
-        if (!is_null($password)) {
+        if (!null === $password) {
             if (!$this->redisClient->auth($password)) {
                 throw new InvalidArgumentException("Redis password invalid.");
             }
@@ -139,6 +139,6 @@ class RedisAdapter implements IAdapter
      */
     public function setPrefix(string $prefix)
     {
-        $this->prefix = $prefix;
+        $this->prefix = ($prefix ?: 'viloveul') . ':';
     }
 }
