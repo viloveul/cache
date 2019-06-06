@@ -17,7 +17,7 @@ class RedisAdapter implements IAdapter
     /**
      * @var string
      */
-    protected $prefix = 'viloveul:';
+    protected $prefix = 'viloveul';
 
     /**
      * @var mixed
@@ -139,6 +139,6 @@ class RedisAdapter implements IAdapter
      */
     public function setPrefix(string $prefix)
     {
-        $this->prefix = ($prefix ?: 'viloveul') . ':';
+        $this->prefix = ($prefix ?: 'viloveul');
     }
 }
